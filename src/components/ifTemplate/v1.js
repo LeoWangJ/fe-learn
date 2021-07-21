@@ -6,7 +6,7 @@ export default class TemplateV1 {
   }
 
   render(com, data) {
-    let dom = this.engine.render(com.render(), data);
+    let dom = this.engine.render(com, data);
     console.log("html>>>", dom);
     this.root.appendChild(dom);
   }

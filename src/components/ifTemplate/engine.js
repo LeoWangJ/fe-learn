@@ -66,39 +66,24 @@ export default class Engine {
     let stack = [[root, fragment, data]];
     //转成成node节点
     while (stack.length > 0) {
-      let [pnode, pdom, scope] = stack.pop();
-      if (pnode.attr.get("for")) {
-        let [key, prop] = pnode.attr.get("for").split("in");
-        key = key.trim();
-        prop = prop.trim();
-        for (let i = 0; i < scope[prop].length; i++) {
-          let newnode = new Vnode(
-            pnode.tag,
-            pnode.attr,
-            pnode.children,
-            pnode.parent,
-            pnode.childrenTemplate
-          );
-          let newScope = {};
-          newScope[key] = scope[prop][i];
-          let html = this.scopehtmlParse(newnode, data, newScope);
-          let ele = this.createElement(newnode, html);
-          this.scopeAtrrParse(ele, newnode, data, newScope);
-          pdom.parentNode.appendChild(ele);
-          newnode.children.forEach((item) => {
-            stack.push([item, ele, newScope]);
-          });
-        }
-      } else {
+        let [pnode, pdom, scope] = stack.pop();
+        if(pnode.attr.get("v-if")){
+            let keyList = pnode.attr.get("v-if").split('.');
+            let isRender = keyList.reduce((accumulator,currentValue) => {
+                return accumulator[currentValue] ? accumulator[currentValue] : undefined
+            },scope)
+            if(!isRender){
+                continue
+            }
+        } 
         let html = this.scopehtmlParse(pnode, data, scope);
         let ele = this.createElement(pnode, html);
         this.scopeAtrrParse(ele, pnode, data, scope);
         pdom.appendChild(ele);
 
         pnode.children.forEach((item) => {
-          stack.push([item, ele, scope]);
+            stack.push([item, ele, scope]);
         });
-      }
     }
     return fragment;
   }
@@ -115,7 +100,6 @@ export default class Engine {
   }
 
   scopeAtrrParse(ele, node, globalScope, curentScope) {
-    console.log(node.attr);
     for (let [key, value] of node.attr) {
       let result = /\{\{(.*?)\}\}/.exec(value);
       if (result && result.length > 0) {
@@ -130,7 +114,7 @@ export default class Engine {
   }
 
   createElement(node, html) {
-    let ignoreAttr = ["for", "click"];
+    let ignoreAttr = ["click","v-if"];
     let dom = document.createElement(node.tag);
     for (let [key, val] of node.attr) {
       if (!ignoreAttr.includes(key)) {
@@ -146,7 +130,7 @@ export default class Engine {
   parseAttribute(str) {
     let attr = new Map();
     str = str.trim();
-    str.replace(/(\w+)\s*=['"](.*?)['"]/gm, (s0, s1, s2) => {
+    str.replace(/([\w|-]+)\s*=['"](.*?)['"]/gm, (s0, s1, s2) => {
       attr.set(s1, s2);
       return s0;
     });
