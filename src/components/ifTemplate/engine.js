@@ -82,7 +82,7 @@ export default class Engine {
         pdom.appendChild(ele);
 
         pnode.children.forEach((item) => {
-            stack.push([item, ele, scope]);
+            stack.unshift([item, ele, scope]);
         });
     }
     return fragment;
