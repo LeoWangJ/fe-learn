@@ -2,14 +2,17 @@
   <div>
     <h1>前端基礎</h1>
     <h2>課堂練習</h2>
-    <div class="menu">
-      <router-link class="item" to="tento64">十進位轉64進位</router-link>
-    </div>
+    <div class="menu"></div>
     <h2>作業</h2>
     <div class="menu">
       <router-link class="item" to="tento64">十進位轉64進位</router-link>
-      <router-link class="item" to="picture-to-grayscale">圖片轉換成灰度圖</router-link>
-      <router-link class="item" to="monaco-editor">monaco-editor</router-link>
+      <router-link class="item" to="picture-to-grayscale"
+        >圖片轉換成灰度圖</router-link
+      >
+      <router-link class="item" to="monaco-editor"
+        >monaco-editor(todo)</router-link
+      >
+      <router-link class="item" to="if-template">if-template</router-link>
     </div>
   </div>
 </template>

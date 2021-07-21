@@ -25,6 +25,11 @@ const routes = [
     name: "PictureToGrayscale",
     component: () => import("../views/PictureToGrayscale.vue"),
   },
+  {
+    path: "/if-template",
+    name: "IfTemplate",
+    component: () => import("../views/IfTemplate.vue"),
+  },
 ];
 
 const router = new VueRouter({
