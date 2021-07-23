@@ -66,24 +66,26 @@ export default class Engine {
     let stack = [[root, fragment, data]];
     //转成成node节点
     while (stack.length > 0) {
-        let [pnode, pdom, scope] = stack.pop();
-        if(pnode.attr.get("v-if")){
-            let keyList = pnode.attr.get("v-if").split('.');
-            let isRender = keyList.reduce((accumulator,currentValue) => {
-                return accumulator[currentValue] ? accumulator[currentValue] : undefined
-            },scope)
-            if(!isRender){
-                continue
-            }
-        } 
-        let html = this.scopehtmlParse(pnode, data, scope);
-        let ele = this.createElement(pnode, html);
-        this.scopeAtrrParse(ele, pnode, data, scope);
-        pdom.appendChild(ele);
+      let [pnode, pdom, scope] = stack.pop();
+      if (pnode.attr.get("v-if")) {
+        let keyList = pnode.attr.get("v-if").split(".");
+        let isRender = keyList.reduce((accumulator, currentValue) => {
+          return accumulator[currentValue]
+            ? accumulator[currentValue]
+            : undefined;
+        }, scope);
+        if (!isRender) {
+          continue;
+        }
+      }
+      let html = this.scopehtmlParse(pnode, data, scope);
+      let ele = this.createElement(pnode, html);
+      this.scopeAtrrParse(ele, pnode, data, scope);
+      pdom.appendChild(ele);
 
-        pnode.children.forEach((item) => {
-            stack.unshift([item, ele, scope]);
-        });
+      pnode.children.forEach((item) => {
+        stack.unshift([item, ele, scope]);
+      });
     }
     return fragment;
   }
@@ -114,7 +116,7 @@ export default class Engine {
   }
 
   createElement(node, html) {
-    let ignoreAttr = ["click","v-if"];
+    let ignoreAttr = ["click", "v-if"];
     let dom = document.createElement(node.tag);
     for (let [key, val] of node.attr) {
       if (!ignoreAttr.includes(key)) {
