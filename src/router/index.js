@@ -18,7 +18,7 @@ const routes = [
   {
     path: "/monaco-editor",
     name: "MonacoEditor",
-    component: () => import("../views/MonacoEditor.vue"),
+    component: () => import("../views/0722/MonacoEditor.vue"),
   },
   {
     path: "/picture-to-grayscale",
