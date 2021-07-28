@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 const host = "http://localhost";
 const process = require("child_process");
+app.use("/", express.static("./"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,7 +16,7 @@ app.get("/views", (req, res) => {
 });
 
 app.post("/upload", async (req, res) => {
-  await fs.writeFileSync("./index.js", req.body.text, (err) => {
+  await fs.writeFileSync("./dist/Hello.vue", req.body.text, (err) => {
     if (err) throw err;
   });
   process.exec("webpack ", (error) => {
@@ -32,7 +33,7 @@ app.post("/upload", async (req, res) => {
       res.send({
         code: 200,
         msg: "檔案上傳成功",
-        url: host + "8080" + "/dist/index.html",
+        url: host + ":" + port + "/dist/demo.html",
       });
     }
   });

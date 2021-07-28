@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrap">
     <div class="monaco-wrap">
       <div class="btn-wrap">
         <input type="file" ref="file" @change="fileHandler" />
@@ -7,7 +7,13 @@
       </div>
       <monaco ref="monaco" :opts="opts" @change="changeValue"></monaco>
     </div>
-    <iframe id="view-iframe"> </iframe>
+    <div v-if="error">{{ error }}</div>
+    <template v-else>
+      <template v-if="loading">編譯中... </template>
+      <template v-else>
+        <iframe ref="viewIframe" width="700px"></iframe>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -20,10 +26,12 @@ export default {
     return {
       opts: {
         value: "",
-        language: "javascript",
+        language: "html",
         theme: "vs-dark",
         automaticLayout: true,
       },
+      error: "",
+      loading: false,
     };
   },
   methods: {
@@ -51,26 +59,43 @@ export default {
       const data = {
         text: this.getValue(),
       };
-      console.log(data);
+      this.error = "";
+      this.loading = true;
       fetch(`${process.env.VUE_APP_SERVER}/upload`, {
         method: "POST",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       })
         .then((res) => {
-          console.log(res.data);
-          let iframe = document.getElementById("view-iframe");
-          iframe.src = res.data.url;
+          return res.json();
         })
-        .catch((err) => console.log(err));
+        .then((res) => {
+          this.loading = false;
+          if (res.code === 200) {
+            this.$nextTick(() => {
+              let iframe = this.$refs.viewIframe;
+              iframe.src = res.url;
+            });
+          } else {
+            this.error = "出錯了...";
+          }
+        })
+        .catch(() => {
+          this.error = "出錯了...";
+          this.loading = false;
+        });
     },
   },
 };
 </script>
 
 <style scoped>
+.wrap {
+  display: flex;
+}
 .monaco-wrap {
   width: 700px;
+  margin-right: 10px;
 }
 
 .btn-wrap {

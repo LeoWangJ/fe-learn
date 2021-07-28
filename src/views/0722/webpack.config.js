@@ -1,29 +1,38 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { VueLoaderPlugin } = require("vue-loader");
-console.log(__dirname);
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
   entry: {
-    index: "./index.js",
+    index: "./dist/main.js",
+  },
+  output: {
+    filename: "[name].bundle.js?[hash:8]",
+    path: path.resolve(__dirname, "./dist"),
   },
   module: {
     rules: [
-      { test: /\.(vue|js)$/, loader: "vue-loader" },
+      {
+        test: /\.vue$/,
+        use: ["vue-loader"],
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.js$/,
+        use: ["babel-loader"],
+      },
     ],
   },
   plugins: [
-    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      title: "preview",
+      title: "即時預覽",
+      filename: "demo.html",
+      template: "./dist/index.html",
+      chunks: ["index"],
     }),
+    new VueLoaderPlugin(),
   ],
-  output: {
-    filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
-    clean: true,
-  },
 };

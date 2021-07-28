@@ -1,10 +1,15 @@
 <template>
-  <div class="hello">hello</div>
+  <div class="hello">{{ text }}</div>
 </template>
 
 <script>
 export default {
   name: "hello",
+  data() {
+    return {
+      text: "hello222",
+    };
+  },
 };
 </script>
 
