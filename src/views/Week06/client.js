@@ -4,7 +4,7 @@ const maxConnectCount = 10;
 for (let i = 0; i < maxConnectCount; ++i) {
   net
     .createConnection({
-      port: 8989,
+      port: 9000,
       host: "127.0.0.1",
     })
     .on("data", (d) => {
