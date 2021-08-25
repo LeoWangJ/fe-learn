@@ -2,7 +2,7 @@ const fastifyPlugin = require("fastify-plugin");
 
 async function mongo(fastify, options) {
   fastify.register(require("fastify-mongodb"), {
-    url: "mongodb://root:mongodb@localhost:27017/todos",
+    url: "mongodb://master:master!123@localhost:27017/todos",
   });
 }
 

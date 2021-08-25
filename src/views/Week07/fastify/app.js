@@ -14,18 +14,18 @@ fastify.register(require("fastify-static"), {
 
 //setup mysql
 fastify.register(require("./plugin/mysql"));
-//setup mongodb
+// //setup mongodb
 fastify.register(require("./plugin/mongo"));
-//setup redis
+// //setup redis
 fastify.register(require("./plugin/redis"));
-//setup leveldb
-fastify.register(require("./plugin/leveldb"));
-// setup elasticsearch
+// //setup leveldb
+// fastify.register(require("./plugin/leveldb"));
+// // setup elasticsearch
 fastify.register(require("./plugin/elasticsearch"));
-//setup websocket
-// fastify.register(require("fastify-ws"));
-//setup schedule
-fastify.register(require("fastify-schedule"));
+// //setup websocket
+// // fastify.register(require("fastify-ws"));
+// //setup schedule
+// fastify.register(require("fastify-schedule"));
 
 // setup router
 fastify.register(require("./routers/index"));
@@ -38,7 +38,7 @@ const start = async () => {
   try {
     console.log("start");
     await fastify.listen(9700);
-    console.log("start at http://localhost:9100");
+    console.log("start at http://localhost:9700");
 
     //start websocket
     // fastify.ws.on("connection", (socket) => {
