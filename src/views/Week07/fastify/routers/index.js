@@ -1,13 +1,13 @@
 const mongodb = require("mongodb");
-
-async function routes(fastify, options) {
+const ObjectId = require("mongodb").ObjectId;
+async function routes(fastify) {
   const db = fastify.mongo.db;
 
-  fastify.get("/animal", async (request, reply) => {
-    return { hello: "animal" };
+  fastify.get("/", async () => {
+    return { hello: "fastify" };
   });
 
-  fastify.get("/todo/add", async (request, reply) => {
+  fastify.get("/mongo/add", async () => {
     const collection = db.collection("todos");
     await collection.insertMany([
       {
@@ -34,10 +34,41 @@ async function routes(fastify, options) {
     return { error: "", errorCode: 0, result: {} };
   });
 
-  fastify.get("/todo/query", async (request, reply) => {
+  fastify.get("/mongo/query", async () => {
     const collection = db.collection("todos");
-    const result = await collection.find({});
+    const result = await collection.find({}).toArray();
+    console.log(result);
     return { error: "", errorCode: 0, result };
+  });
+
+  fastify.get("/mongo/edit/:id", async (request, reply) => {
+    const collection = db.collection("todos");
+    let findID = await collection
+      .find({ _id: ObjectId(request.params.id) })
+      .toArray();
+    if (findID.length !== 0) {
+      await collection.updateOne(
+        { _id: ObjectId(request.params.id) },
+        { $set: { subject: "我成功更新文檔囉" } },
+        { upsert: true }
+      );
+      return { error: "", errorCode: 0, result: "success" };
+    } else {
+      return { error: "", errorCode: 1, result: "not found id" };
+    }
+  });
+
+  fastify.get("/mongo/delete/:id", async (request, reply) => {
+    const collection = db.collection("todos");
+    let findID = await collection
+      .find({ _id: ObjectId(request.params.id) })
+      .toArray();
+    if (findID.length !== 0) {
+      await collection.remove({ _id: ObjectId(request.params.id) });
+      return { error: "", errorCode: 0, result: "success" };
+    } else {
+      return { error: "", errorCode: 1, result: "not found id" };
+    }
   });
 
   fastify.get("/redis/set", async (request, reply) => {
@@ -61,11 +92,12 @@ async function routes(fastify, options) {
 
   fastify.get("/mysql/insert", async (req, reply) => {
     fastify.mysql.getConnection((err, connection) => {
-      if (err)
+      if (err) {
         return reply
           .code(500)
           .header("Content-Type", "application/json; charset=utf-8")
           .send(err);
+      }
       connection.execute(
         "INSERT INTO todos VALUES (0, 'mysql', '2021-08-10 20:20:20', 0)",
         (err, result, fields) => {
