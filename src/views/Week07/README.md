@@ -28,13 +28,14 @@ node db.js
 4. 進入 `fastify` 開啟服務，記得要先 `npm install`
 
 ```
-node app.js
+npm run start
 ```
 
-## mongo CRUD
 
 服務位置 : `http:localhost:9700`
-為了方便調試，皆用 `GET` 請求
+以下為了方便調試，皆用 `GET` 請求
+
+## Mongo
 
 1. 新增
 
@@ -58,4 +59,66 @@ node app.js
 
 ```
 /mongo/delete/:id
+```
+
+## Redis 
+
+1. 新增
+
+```
+/redis/set?key=value
+```
+
+2. 刪除
+
+```
+/redis/get/:key
+```
+
+## MySQL
+建議搭配 `phpmyadmin` 查詢
+服務位置 : `http:localhost:9090`
+帳號: `dataUser`
+密碼: `123qwe`
+
+1. 創建 `todos` 資料表
+
+```
+/mysql/createTable
+```
+
+2. 新增
+
+```
+/mysql/add
+```
+
+3. 查詢
+
+```
+/mysql/query
+```
+
+4. 更新 - 目前自動更新 {`name`: `jack`}
+
+```
+/mysql/edit/:id
+```
+
+5. 刪除 
+
+```
+/mysql/delete/:id
+```
+
+## elasticsearch
+
+1. 新增
+```
+/es/add
+```
+
+2. 查詢
+```
+/es/get
 ```

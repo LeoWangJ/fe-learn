@@ -90,7 +90,29 @@ async function routes(fastify) {
     return { error: "", errorCode: 0, result: val };
   });
 
-  fastify.get("/mysql/insert", async (req, reply) => {
+  fastify.get("/mysql/createTable", async (req, reply) => {
+    fastify.mysql.getConnection((err, connection) => {
+      connection.execute(
+        "CREATE TABLE IF NOT EXISTS `todos`( " +
+          "id INT AUTO_INCREMENT NOT NULL, " +
+          "class INT NOT NULL, " +
+          "name VARCHAR(100) NOT NULL, " +
+          "age INT NOT NULL, " +
+          "score INT NOT NULL, " +
+          "primary key (id))ENGINE=InnoDB DEFAULT CHARSET=utf8;",
+        (err, result, fields) => {
+          if (err) {
+            console.log(err);
+          }
+          return reply
+            .code(200)
+            .header("Content-Type", "application/json; charset=utf-8")
+            .send({ result: "success" });
+        }
+      );
+    });
+  });
+  fastify.get("/mysql/add", async (req, reply) => {
     fastify.mysql.getConnection((err, connection) => {
       if (err) {
         return reply
@@ -99,12 +121,15 @@ async function routes(fastify) {
           .send(err);
       }
       connection.execute(
-        "INSERT INTO todos VALUES (0, 'mysql', '2021-08-10 20:20:20', 0)",
+        "INSERT INTO todos VALUES (null, 101, 'leo', 10, 59)",
         (err, result, fields) => {
+          if (err) {
+            console.log(err);
+          }
           return reply
             .code(200)
             .header("Content-Type", "application/json; charset=utf-8")
-            .send({ result });
+            .send({ result: "success" });
         }
       );
     });
@@ -126,22 +151,80 @@ async function routes(fastify) {
     });
   });
 
-  fastify.get("/leveldb/set", async (request, reply) => {
-    if (!request.query)
-      return { error: "401", errorCode: "param key is required" };
-    const level = fastify.level.db;
-    Object.keys(request.query).forEach((key) => {
-      level.put(key, request.query[key]);
+  fastify.get("/mysql/edit/:id", async (req, reply) => {
+    fastify.mysql.getConnection((err, connection) => {
+      if (err)
+        return reply
+          .code(500)
+          .header("Content-Type", "application/json; charset=utf-8")
+          .send(err);
+      connection.query(
+        `SELECT * FROM todos WHERE id = ${req.params.id}`,
+        (err, result, fields) => {
+          if (err) {
+            return reply
+              .code(500)
+              .header("Content-Type", "application/json; charset=utf-8")
+              .send(err);
+          } else {
+            connection.execute(
+              `UPDATE todos SET name='jack' WHERE id=${req.params.id};`,
+              function (updateErr, updateResult) {
+                if (updateErr) {
+                  return reply
+                    .code(500)
+                    .header("Content-Type", "application/json; charset=utf-8")
+                    .send(err);
+                } else {
+                  return reply
+                    .code(200)
+                    .header("Content-Type", "application/json; charset=utf-8")
+                    .send({ result: "success" });
+                }
+              }
+            );
+          }
+        }
+      );
     });
-    return { error: "", errorCode: 0, result: request.query };
   });
 
-  fastify.get("/leveldb/get/:key", async (request, reply) => {
-    if (!request.params.key)
-      return { error: "401", errorCode: "param key is required" };
-    const level = fastify.level.db;
-    let val = await level.get(request.params.key);
-    return { error: "", errorCode: 0, result: val };
+  fastify.get("/mysql/delete/:id", async (req, reply) => {
+    fastify.mysql.getConnection((err, connection) => {
+      if (err)
+        return reply
+          .code(500)
+          .header("Content-Type", "application/json; charset=utf-8")
+          .send(err);
+      connection.query(
+        `SELECT * FROM todos WHERE id = ${req.params.id}`,
+        (err, result, fields) => {
+          if (err) {
+            return reply
+              .code(500)
+              .header("Content-Type", "application/json; charset=utf-8")
+              .send(err);
+          } else {
+            connection.execute(
+              `DELETE FROM todos WHERE id=${req.params.id};`,
+              function (updateErr, updateResult) {
+                if (updateErr) {
+                  return reply
+                    .code(500)
+                    .header("Content-Type", "application/json; charset=utf-8")
+                    .send(err);
+                } else {
+                  return reply
+                    .code(200)
+                    .header("Content-Type", "application/json; charset=utf-8")
+                    .send({ result: "success" });
+                }
+              }
+            );
+          }
+        }
+      );
+    });
   });
 
   fastify.get("/es/add", async (request, reply) => {

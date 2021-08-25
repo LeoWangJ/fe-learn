@@ -1,5 +1,7 @@
 {
-  "scripts": {},
+  "scripts": {
+    "start" : "nodemon app.js"
+  },
   "dependencies": {
     "fastify": "^3.20.1",
     "fastify-elasticsearch": "^2.0.0",
@@ -14,6 +16,7 @@
     "toad-scheduler": "^1.5.0"
   },
   "devDependencies": {
-    "mongo-init": "1.0.2"
+    "mongo-init": "1.0.2",
+    "nodemon": "^2.0.12"
   }
 }
