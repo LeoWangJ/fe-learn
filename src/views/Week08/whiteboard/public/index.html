@@ -53,6 +53,9 @@
 label{
     color: #fff;
 }
+#myVideo {
+  transform: scaleX(-1);
+}
     </style>
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -142,12 +145,19 @@ label{
         </div>
 
         <div class="webRtc">
-          <video id="remoteVideo" autoplay></video>
-          <video id="localVideo" autoplay muted></video>
-          <input id="videoCallButton" type="button" disabled value="Video Call"/>
-          <input id="endCallButton" type="button" disabled value="End Call"/>
-        </div>
-    </div>
+          <button class="initialBtn">初始化</button>
+      
+          <button class="joinBtn">join room</button>
+          
+          <button class="btnCall">send offer</button>
+                                  
+          <video width="200" height="200" autoplay
+            id="myVideo" muted playsinline></video>
+                          
+          <video width="500" height="500" autoplay
+            id="remoteVideo" playsinline></video>
+                </div>
+            </div>
     
 <!-- Script files -->
         <script src='jquery.min.js'></script>
