@@ -6,13 +6,6 @@ const port = process.env.PORT || 3001;
 
 app.use(express.static(__dirname + "/public"));
 
-// function onConnection(socket) {
-//   socket.on("draw", (data) => {
-//     socket.broadcast.emit("draw", data);
-//     console.log(data);
-//   });
-// }
-
 function findNowRoom(client) {
   return Object.keys(client.rooms).find((item) => {
     return item !== client.id;
@@ -22,18 +15,15 @@ function findNowRoom(client) {
 io.on("connection", (client) => {
   console.log(`socket 用戶連接 ${client.id}`);
 
-  client.on("joinRoom", (room) => {
+  client.on("joinRoom", async (room) => {
     console.log(room);
 
     const nowRoom = findNowRoom(client);
-    console.log(nowRoom);
     if (nowRoom) {
       client.leave(nowRoom);
     }
-    client.join(room, () => {
-      console.log("room", room);
-      io.sockets.in(room).emit("roomBroadcast", "已有新人加入聊天室！");
-    });
+    await client.join(room);
+    io.sockets.in(room).emit("roomBroadcast", "已有新人加入聊天室！");
   });
 
   client.on("peerconnectSignaling", (message) => {

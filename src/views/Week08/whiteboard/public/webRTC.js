@@ -1,12 +1,36 @@
 "use strict";
 
 (function () {
-  const myVideo = document.querySelector("#myVideo");
+  // 連線到 Server Port
+  const socket = io("http://localhost:3001");
   let localstream;
+  let pc;
+  const myVideo = document.querySelector("#myVideo");
+  const remoteVideo = document.querySelector("#remoteVideo");
+  const joinBtn = document.querySelector(".joinBtn");
+  const initialBtn = document.querySelector(".initialBtn");
+  const btnCall = document.querySelector(".btnCall");
+
+  initialBtn.addEventListener("click", initPeerConnection);
+  joinBtn.addEventListener("click", joinRoom);
+  btnCall.addEventListener("click", createSignal(true));
+
+  function joinRoom() {
+    socket.emit("joinRoom", "secret room");
+  }
+
+  async function initPeerConnection() {
+    await createMedia();
+    getAudioVideo();
+    createPeerConnection();
+    addLocalStream();
+    onIceCandidates();
+    onIceconnectionStateChange();
+    onAddStream();
+  }
 
   // 初始化影像/聲音
   async function createMedia() {
-    // 儲存本地流到全域
     localstream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: true,
@@ -28,12 +52,6 @@
     }
   }
 
-  const joinBtn = document.querySelector(".joinBtn");
-  let pc;
-
-  // 連線到 Server Port
-  const socket = io("http://localhost:3001");
-
   // 建立 P2P 連接
   function createPeerConnection() {
     const configuration = {
@@ -50,14 +68,6 @@
   function addLocalStream() {
     pc.addStream(localstream);
   }
-
-  function joinRoom() {
-    socket.emit("joinRoom", "secret room");
-  }
-
-  joinBtn.addEventListener("click", joinRoom);
-
-  const remoteVideo = document.querySelector("#remoteVideo");
 
   // 監聽 ICE Server
   function onIceCandidates() {
@@ -88,20 +98,7 @@
       }
     };
   }
-  const initialBtn = document.querySelector(".initialBtn");
 
-  async function initPeerConnection() {
-    await createMedia();
-    getAudioVideo();
-    createPeerConnection();
-    addLocalStream();
-    onIceCandidates();
-    onIceconnectionStateChange();
-    onAddStream();
-  }
-
-  initialBtn.addEventListener("click", initPeerConnection);
-  const btnCall = document.querySelector(".btnCall");
   let offer;
 
   const signalOption = {
@@ -131,8 +128,6 @@
     console.log(`寄出 ${isOffer}`);
     socket.emit("peerconnectSignaling", { desc });
   }
-
-  btnCall.addEventListener("click", createSignal(true));
 
   socket.on("peerconnectSignaling", async ({ desc, candidate }) => {
     // desc 指的是 Offer 與 Answer
