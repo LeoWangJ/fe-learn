@@ -13,7 +13,9 @@
 
   initialBtn.addEventListener("click", initPeerConnection);
   joinBtn.addEventListener("click", joinRoom);
-  btnCall.addEventListener("click", createSignal(true));
+  btnCall.addEventListener("click", function () {
+    createSignal(true);
+  });
 
   function joinRoom() {
     socket.emit("joinRoom", "secret room");
@@ -92,6 +94,7 @@
   // 監聽是否有流傳入，如果有的話就顯示影像
   function onAddStream() {
     pc.onaddstream = (event) => {
+      console.log("event:", event);
       if (!remoteVideo.srcObject && event.stream) {
         remoteVideo.srcObject = event.stream;
         console.log("接收流並顯示於遠端視訊！", event);

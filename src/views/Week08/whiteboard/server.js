@@ -6,10 +6,8 @@ const port = process.env.PORT || 3001;
 
 app.use(express.static(__dirname + "/public"));
 
-function findNowRoom(client) {
-  return Object.keys(client.rooms).find((item) => {
-    return item !== client.id;
-  });
+function findNowRoom() {
+  return "secret room";
 }
 
 io.on("connection", (client) => {
@@ -27,9 +25,10 @@ io.on("connection", (client) => {
   });
 
   client.on("peerconnectSignaling", (message) => {
-    console.log("接收資料：", message);
+    console.log("接收資料：");
 
     const nowRoom = findNowRoom(client);
+    console.log("nowRoom:", nowRoom);
     client.to(nowRoom).emit("peerconnectSignaling", message);
   });
 
