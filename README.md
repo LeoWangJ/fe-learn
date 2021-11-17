@@ -1,24 +1,12 @@
-# module1
+# 畢業總結
 
-## Project setup
-```
-yarn install
-```
+這個課堂比想像中的還要難，前期的課程還能跟上，基本上每個禮拜都在趕作業。
+作業難度通常都需要想個幾天才有辦法實作出來，雖然作業能做出來，但其實對於整體知識理解上還是非常欠缺的。
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+到課程後期幾乎是放棄狀態了，很大部分來自於時間分配不佳，會在課程結束後慢慢補上。
 
-### Compiles and minifies for production
-```
-yarn build
-```
+對於這個課堂的評價我還是給挺高的，因為學習到從前沒注意過的 node.js 知識、微前端、vue 源碼解析、手寫 template 還有 透過 webpack 即時運行 vue....等等
 
-### Lints and fixes files
-```
-yarn lint
-```
+美中不足的是課程太緊湊了，四個月真的好難吸收全部知識，當然這些只能靠後面自行慢慢吸收了，畢竟學習是自己的事情，但若全部知識點學習完的話，我相信這個對自身實力是能夠大幅提升的。
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+感謝老師、助教與班班的督促與教導，咱們後會有期。
